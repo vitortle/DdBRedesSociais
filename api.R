@@ -16,16 +16,12 @@ library('RMySQL')
 library('base')
 require(httr)
 
-# token<-'1073380367.858e864.5f9ad96792634b52b81ef0c3edc9a53f'
-
 full_url <- oauth_callback()
 full_url <- gsub("(.*localhost:[0-9]{1,5}/).*", x=full_url, replacement="\\1")
 print(full_url)
 
 #preparação da API
-app_name <- "DiarioAPP"
-client_id <- "ef9689c1912e439b8c76a7b6a3ca0482"
-client_secret <- "3558f495a37d4f4a88745df6506208b1"
+source('/home/vitor/Documents/Diário de bordo/dados_user.r')
 scope = 'public_content'
 instagram <- oauth_endpoint(
   authorize = "https://api.instagram.com/oauth/authorize",
@@ -41,10 +37,7 @@ received_profile <- user_info$data$id
 media <- rjson::fromJSON(getURL(paste('https://api.instagram.com/v1/users/self/media/recent/?access_token=',token,sep="")))
 
 #conexão com o banco
-conexao = dbConnect(MySQL(), user='root', host="127.0.0.1", password="root", dbname="diariodebordodb")
-q<-"SELECT count(id_self) FROM self;"
-query = dbSendQuery(conexao,q)
-dados = fetch(query, n = -1)
+conexao = dbConnect(MySQL(), user=user, host=host, password=password, dbname=dbname)
 
 #ETL self
 df_user=NULL
